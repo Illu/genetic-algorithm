@@ -1,0 +1,98 @@
+var TARGET = 'hello';
+var POPULATION = 100;
+var MAX_LENGTH = 15; //max length of each individual. Must be greater than TARGET's length
+var MUTATION_CHANCE = 10; //in percent
+var SIM_SPEED = 10;
+
+var gen = 0;
+var arr = [];
+
+function startSimulation(){
+  var interval = setInterval(generateGen, SIM_SPEED);
+  // generateGen();//for tests. uncomment above for loop.
+}
+
+function generateGen(){
+  $('#cont').html('');
+  write('[GEN ' + gen + ']');
+
+  if (gen === 0)
+    arr = firstGeneration();
+
+  //assign a score to every element.
+  for (var i = 0; i < POPULATION; i++){
+    arr[i].score = fitness(arr[i].str, TARGET);
+  }
+
+  //the array is sorted from the best to the worst individual.
+  arr.sort(function(a, b) {
+      var scoreA = a.score
+      var scoreB = b.score
+      return (scoreA < scoreB) ? -1 : (scoreA > scoreB) ? 1 : 0;
+    });
+
+  //display the gen
+  for (var i = 0; i < POPULATION; i++){
+    write(arr[i].str + ' (' + arr[i].score + ')');
+  }
+
+  //get rid of the weak ones (highest scores)
+  for (var i = 0; i < POPULATION / 2; i++)
+    arr.pop();
+
+    //get all characters in survivors
+    var charBank = '';
+    for (var i = 0; i < arr.length; i++){
+      charBank += arr[i].str;
+    }
+
+  //create children
+  for (var i = 0; i < POPULATION / 2; i++){
+
+    //the string is generated at a random length, with characters from the survivors
+    var str = generateBabyStr(charBank);
+
+    var baby = new individual(str, 0);
+    arr.push(baby);
+
+  }
+
+  //TODO:
+  //check if a mutation occurs.
+
+  gen++;
+}
+
+function fitness(strA, strB) {
+    //Points attribution:
+    //for each additional / fewer character, add 3 Points
+    //for every character not in common with the TARGET, add 5 points.
+    //for every misplaced character, add 1 point. TODO
+
+    //a is the individual's string
+    //b is the target.
+
+    var score = 0;
+    var a = strA.split('');
+    var b = strB.split('');
+    var diff = a.length - b.length;
+    if (diff < 0)
+      diff *= -1;
+    score += diff * 3;
+
+    for (var i = 0; i < a.length; i++){
+      if (b.indexOf(a[i]) < 0)
+        score += 5;
+    }
+
+    // check for incorrectly placed characters.
+    for (var i = 0; i < a.length; i++){
+      if (b.indexOf(a[i]) >= 0){
+        //if the character is correct (but we don't know if he's in the right place yet)
+        //TODO
+      }
+    }
+
+
+    return score;
+}
