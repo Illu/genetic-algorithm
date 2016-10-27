@@ -9,7 +9,7 @@ var arr = [];
 
 function startSimulation(){
   var interval = setInterval(generateGen, SIM_SPEED);
-  // generateGen();//for tests. uncomment above for loop.
+  //  generateGen();//for tests. uncomment above for loop.
 }
 
 function generateGen(){
@@ -67,11 +67,12 @@ function fitness(strA, strB) {
     //Points attribution:
     //for each additional / fewer character, add 3 Points
     //for every character not in common with the TARGET, add 5 points.
-    //for every misplaced character, add 1 point. TODO
+    //for every misplaced character, add 1 point.
 
     //a is the individual's string
     //b is the target.
 
+    //check string's length
     var score = 0;
     var a = strA.split('');
     var b = strB.split('');
@@ -80,6 +81,7 @@ function fitness(strA, strB) {
       diff *= -1;
     score += diff * 3;
 
+    //check for characters not in common
     for (var i = 0; i < a.length; i++){
       if (b.indexOf(a[i]) < 0)
         score += 5;
@@ -88,11 +90,12 @@ function fitness(strA, strB) {
     // check for incorrectly placed characters.
     for (var i = 0; i < a.length; i++){
       if (b.indexOf(a[i]) >= 0){
-        //if the character is correct (but we don't know if he's in the right place yet)
-        //TODO
+        var placeInTarget = b.indexOf(a[i]);
+        var placeInInd = i;
+        if (placeInTarget != placeInInd){
+          score += 1;
+        }
       }
     }
-
-
     return score;
 }
