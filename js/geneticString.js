@@ -1,7 +1,8 @@
 var TARGET = 'hello';
 var POPULATION = 100;
 var MAX_LENGTH = 15; //max length of each individual. Must be greater than TARGET's length
-var MUTATION_CHANCE = 10; //in percent
+var MUTATION_CHANCE = 30; //in percent
+var MUTATION_FORCE = 10; // how much the mutation will impact an individual
 var SIM_SPEED = 10;
 
 var gen = 0;
@@ -50,16 +51,18 @@ function generateGen(){
   for (var i = 0; i < POPULATION / 2; i++){
 
     //the string is generated at a random length, with characters from the survivors
+
+    //if a mutation occurs, some characters in the charBank are replaced by random ones.
+    var rng = Math.floor((Math.random() * 100) + 1);
+    if (rng <= MUTATION_CHANCE)
+      charBank += getRandomChar(Math.floor((Math.random() * 10) + 1));
+
     var str = generateBabyStr(charBank);
 
     var baby = new individual(str, 0);
     arr.push(baby);
 
   }
-
-  //TODO:
-  //check if a mutation occurs.
-
   gen++;
 }
 
@@ -71,6 +74,11 @@ function fitness(strA, strB) {
 
     //a is the individual's string
     //b is the target.
+
+    //TODO: Check for duplicates. (if target has 3 'L' and ind has 4, the score needs to be increased)
+
+    if (strA === strB)
+      return 0;
 
     //check string's length
     var score = 0;
