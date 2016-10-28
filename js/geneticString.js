@@ -2,20 +2,29 @@ var TARGET = 'hello';
 var POPULATION = 100;
 var MAX_LENGTH = 15; //max length of each individual. Must be greater than TARGET's length
 var MUTATION_CHANCE = 30; //in percent
-var MUTATION_FORCE = 10; // how much the mutation will impact an individual
+var MUTATION_FORCE = 10; //how much the mutation will impact an individual
 var SIM_SPEED = 10;
 
 var gen = 0;
 var arr = [];
+var interval = false;
 
 function startSimulation(){
-  var interval = setInterval(generateGen, SIM_SPEED);
-  //  generateGen();//for tests. uncomment above for loop.
+  if (!interval)
+    interval = setInterval(generateGen, SIM_SPEED);
+  //  generateGen();//for tests only
+}
+
+function stopSimulation(){
+  clearInterval(interval);
+  interval = false;
+  gen = 0;
 }
 
 function generateGen(){
   $('#cont').html('');
   write('[GEN ' + gen + ']');
+  TARGET = $('#targetField').val();
 
   if (gen === 0)
     arr = firstGeneration();
